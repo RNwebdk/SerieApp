@@ -1,27 +1,54 @@
-function getShow(name){
+function getShows(name){
   return new Promise(function(resolve, reject) {
     const xhr = new XMLHttpRequest();
-    console.log('http://api.tvmaze.com/singlesearch/shows?q=' + name);
-    xhr.open('GET', 'http://api.tvmaze.com/singlesearch/shows?q=' + name, true);
-    // xhr.open('GET', `http://api.tvmaze.com/singlesearch/shows?q=${name}`, true);
-    // xhr.open('GET', `http://api.tvmaze.com/shows/4?embed=nextepisode`, true);
+    xhr.open('GET', 'http://api.tvmaze.com/search/shows?q=' + name, true);
 
     xhr.onload = function() {
       if(this.status === 200) {
         const response = JSON.parse(this.responseText);
-        // let output = template(response);
+        let output = template(response);
+        console.log(response);
+        let shows = [];
+
+        response.forEach(res => {
+          shows.push({
+            id: res.show.id,
+            title: res.show.name, 
+            image: res.show.image ? res.show.image.original : 'http://placehold.it/300x400',
+            desc: res.show.summary,
+            nextEpisode: ''
+          });
+        })
+
+        resolve(shows);
+      }else{
+        reject("error: could not get show from API");
+      }
+    }
+    xhr.send();
+
+  });
+}
+
+function getShow(name) {
+  return new Promise(function(resolve, reject) {
+    const xhr = new XMLHttpRequest();
+    console.log('http://api.tvmaze.com/singlesearch/shows?q=' + name);
+    xhr.open('GET', 'http://api.tvmaze.com/singlesearch/shows?q=' + name, true);
+
+    xhr.onload = function() {
+      if(this.status === 200) {
+        const response = JSON.parse(this.responseText);
 
         let show = {
-          'id': response.id,
-          'title': response.name, 
-          'image': response.image['original'], 
-          'desc': response.summary
+          id: response.id,
+          title: response.name, 
+          image: response.image ? response.image.original : null, 
+          desc: response.summary,
+          nextEpisode: null
         }
-
-        data.push(show);
-
-        // document.querySelector('.test').innerHTML = output;
-        resolve(response.id);
+     
+        resolve(show);
       }else{
         reject("error: could not get show from API");
       }
@@ -32,38 +59,24 @@ function getShow(name){
 }
 
 
-
-function nextEpisode(id){
+function nextEpisode(show) {
   return new Promise(function(resolve, reject) {
     const xhr = new XMLHttpRequest();
-    console.log('this is the id for nextEpisode');
-    console.log(id);
-    // xhr.open('GET', 'http://api.tvmaze.com/singlesearch/shows?q=arrow', true);
-    // xhr.open('GET', `http://api.tvmaze.com/singlesearch/shows?q=${name}`, true);
-    xhr.open('GET', `http://api.tvmaze.com/shows/${id}?embed=nextepisode`, true);
+    xhr.open('GET', `http://api.tvmaze.com/shows/${show.id}?embed=nextepisode`, true);
 
     xhr.onload = function() {
       if(this.status === 200) {
         const response = JSON.parse(this.responseText);
 
-        let nextEpisode;
         if (response.hasOwnProperty('_embedded')) {
           let nextSeason = response._embedded.nextepisode.season;
           let episode = response._embedded.nextepisode.number;
-          nextEpisode = "S0" + nextSeason + "E" + episode;
-          
+          show.nextEpisode = "S0" + nextSeason + "E" + episode;
         }else{
-          nextEpisode = 'Unknown';
+          show.nextEpisode = 'Unknown';
         }
-        // console.log(response._embedded.nextepisode.season);
-        
-        for (var i = 0; i < data.length; i++) {
-          if (data[i].id == id) {
-            data[i].nextEpisode = nextEpisode;
-          }
-        }
-        console.log(data);
-        resolve();
+
+        resolve(show);
       }else{
         reject('next episode was not found');
       }
@@ -72,38 +85,62 @@ function nextEpisode(id){
   });
 }
 
-function fetchShows(){
-  return new Promise(function(resolve, reject){
-      data.forEach(function(show){
-        document.getElementById('test').innerHTML = template(show);
-      })
+function nextEpisodes(shows) {
+  let newShows = shows;
+  return new Promise(function(resolve, reject) {
+    for (let i = 0; i < shows.length; i++) {
+      nextEpisode(shows[i])
+        .then(show => {
+          newShows.push(show);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    }
+
+    resolve(newShows);
   });
 }
 
-function template(data){
-
-  // console.log(`${nextEpisode(data.id)}`);
+function template(show) {
   return `
-    <div class="card u-clearfix">    
-      <div class="card-media">
-        <img src="${data.image}" alt="" class="card-media-img" />
-        <div class="u-clearfix"></div>
-        <div class="nextdate">Next: ${data.nextEpisode}</div>
-        <div class="watched">Seen: S03E44</div>
-      </div>
-      
-      <div class="card-body">
-        <h2 class="card-body-heading">${data.title}</h2>
-        <div class="summary">${data.desc}</div>
+    <div class="col-sm-6 col-md-4 col-lg-3 mt-4">
+        <div class="card card-inverse card-info">
+            <img class="card-img-top img-fluid" src="${show.image}">
+            <div class="card-block">
+                <h4 class="card-title">${show.title}</h4>
+                <div class="card-text">
+                    ${show.desc}
+                </div>
+            </div>
+            <div class="card-footer">
+                <small>Next Episode: ${show.nextEpisode}</small>
+                <br>
+                <small>Date: 28/03-2018</small>
+                <button class="btn btn-success float-right btn-md">Tilføj serie</button>
+            </div>
+        </div>
     </div>
     `;
 }
 
-let data = [];
+function templates(shows) {
+  let templatesArr = [];
+  shows.forEach(show => {
+    templatesArr.push(template(show));
+  });
 
-getShow('friends')
-.then(nextEpisode)
-.then(fetchShows)
-.catch(function(err){
-  console.log(err);
-});
+  return templatesArr
+}
+
+getShows('breaking')
+  .then(nextEpisodes)
+  .then(shows => {
+    templates(shows).forEach(templateStr => {
+      console.log(templateStr);
+      document.querySelector('#test').innerHTML += templateStr;
+    });
+  })
+  .catch(err => {
+    console.log(err);
+  });
