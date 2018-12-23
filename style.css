@@ -3,6 +3,10 @@ html {
     font-size: 14px;
 }
 
+body{
+    background: #E9EBEE;
+}
+
 h5 {
     font-size: 1.28571429em;
     font-weight: 700;
@@ -17,6 +21,7 @@ h5 {
     border: none;
     border-radius: .28571429rem;
     box-shadow: 0 1px 3px 0 #d4d4d5, 0 0 0 1px #d4d4d5;
+/*    min-height: 560px;*/
 }
 
 .card-block {
@@ -32,7 +37,7 @@ h5 {
 .card-img-top {
     display: block;
     width: 100%;
-    height: auto;
+    max-height: 340px;
 }
 
 .card-title {
@@ -119,4 +124,31 @@ h5 {
 
 .meta a:hover {
     color: rgba(0, 0, 0, .87);
+}
+
+.favoriteButton{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: #18BC9C;
+    padding: 5px;
+    text-align: center;
+    color : white;
+    font-size: 25px;
+}
+
+.favoriteButton:hover{
+    background: #3C948B;
+    cursor: pointer;
+}
+
+.card-header{
+    /*position: absolute;*/
+    /*top: 0;*/
+    /*right: 0;*/
+    background-color: #18BC9C;
+    padding: 5px;
+    text-align: center;
+    color: white;
+    font-size: 100%;
 }

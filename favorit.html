@@ -19,39 +19,39 @@
         <div class="collapse navbar-collapse" id="navbarColor03">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-              <a class="nav-link" href="index.html">Søg serier <span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="index.html">Søg serier</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="favorit.html">Mine favoritter</a>
+              <a class="nav-link" href="favorit.html">Mine favoritter <span class="sr-only">(current)</span></a>
             </li>
           </ul>
         </div>
       </nav>
 
-
-      <div id="content">
-        
-        <div class="input-group mb-3 mt-4">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">Søg Serie</span>
-          </div>
-          <input type="text" class="form-control" aria-label="Username" id="search" aria-describedby="basic-addon1">
-        </div>
-        <div class="jumbotron">
-          <h1 class="display-5">Søg serier</h1>
-        </div>
-
-        <div class="row mb-5" id="series">
-          
-          <div class="col-sm-6 col-md-4 col-lg-3 mt-4">
-            <div class="card card-inverse card-info">
-                <img class="card-img-top img-fluid" src="http://placehold.it/300x400">
-                <div class="favoriteButton col-lg-12">test</div>
-            </div>
-          </div>
-        </div>
-
+      <div class="jumbotron">
+        <h1 class="display-6">Mine favoritter</h1>
+        <button id="deleteFavorite">Delete all</button>
       </div>
+
+      <div class="row mb-5" id="series">
+        <div class="col-sm-6 col-md-4 col-lg-3 mt-4">
+          <div class="card card-inverse card-info jumbotron">
+              <img class="card-img-top img-fluid" src="http://placehold.it/300x400">
+              <div class="card-block">
+                  <h4 class="card-title">Serie Navn</h4>
+                  <div class="card-text">
+                      Description goes here
+                  </div>
+              </div>
+              <div class="card-footer">
+                  <br>
+                  <small>Date: 28/03-2018</small>
+                  <button class="btn btn-success float-right btn-md">Læs mere</button>
+              </div>
+          </div>
+        </div>
+      </div>
+
         
     </div>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

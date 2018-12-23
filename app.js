@@ -5,6 +5,7 @@ function getShows(name){
 
     xhr.onload = function() {
       if(this.status === 200) {
+        console.log(this.responseText);
         const response = JSON.parse(this.responseText);
         let output = template(response);
         console.log(response);
@@ -133,7 +134,7 @@ function templates(shows) {
   return templatesArr
 }
 
-getShows('breaking')
+getShows('test')
   .then(nextEpisodes)
   .then(shows => {
     templates(shows).forEach(templateStr => {
